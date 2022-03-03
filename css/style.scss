@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  background: url(../img/books1.jpg) no-repeat center/cover;
+  padding: 50px;
+
+  &__title {
+    text-align: center;
+    font: 900 60px / 50px sans-serif;
+    margin-bottom: 35px;
+  }
+}
+
+.search {
+  max-width: 1140px;
+  margin: 0 auto;
+  color: #000;
+
+  &__query {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__text {
+    display: block;
+    width: 50%;
+    padding: 5px 10px;
+    border: 1px solid #000;
+    border-right: 0;
+    font: 400 20px / 20px sans-serif;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__submit {
+    width: 30px;
+    border: 1px solid #000;
+    border-left: 0;
+    padding: 2px;
+    background: url(../img/search.svg) no-repeat center/75%, #fff;
+  }
+
+  &__filters {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  &__label {
+    font: 400 20px/20px sans-serif;
+  }
+
+  &__select {
+    width: 20%;
+    height: 30px;
+    font: 400 20px / 20px sans-serif;
+    color: rgba(0, 0, 0, 0.7);
+    margin-right: 15px;
+  }
+}
