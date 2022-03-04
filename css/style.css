@@ -69,11 +69,15 @@
 
 .query-total {
   text-align: center;
-  margin-top: 15px;
+  margin: 15px 0;
   font: 500 18px sans-serif;
 }
 
 .books {
+  padding: 30px;
+}
+
+.books__items {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -82,7 +86,6 @@
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  padding: 30px;
 }
 
 .book-card {
@@ -132,10 +135,65 @@
 }
 
 .pagination {
-  padding: 30px;
-  width: 200px;
+  padding: 5px 30px;
   margin: 40px auto;
   display: block;
+  border-radius: 20px;
   font: 400 22px sans-serif;
+  background: #a34f1e;
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.2s;
+  transition: -webkit-transform 0.2s;
+  transition: transform 0.2s;
+  transition: transform 0.2s, -webkit-transform 0.2s;
+}
+
+.pagination:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+.loader {
+  margin: 0 auto;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: conic-gradient(transparent, #a34f1e);
+  -webkit-animation: rotating 1s linear infinite;
+          animation: rotating 1s linear infinite;
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+  background: white;
+}
+
+@-webkit-keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
 }
 /*# sourceMappingURL=style.css.map */

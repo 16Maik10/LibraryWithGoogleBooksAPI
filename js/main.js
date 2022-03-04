@@ -1,23 +1,18 @@
 "use strict"
 const apiKey = 'AIzaSyDZrELY_tBXGV7M8vFVqzXmFOOcO4APmKY';
 
-let textOfQuery = "";
-
-const inputEl = document.querySelector('input.search__text');
-const formEl = document.querySelector('form.search');
-formEl.addEventListener('submit', e => {
-    e.preventDefault();
-    textOfQuery = inputEl.value;
-    Vm.$refs.books.clearContent();
-    Vm.$refs.books.getBooks();
-})
 
 
-const Vm = new Vue({
+
+
+const vm = new Vue({
     el: "#app",
-    components: {books},
+    components: {searchForm, books},
     data: {
-        show: false,
+        textOfQuery: "",
+        category: "all",
+        orderBy: "relevance",
+        showLoading: false,
         totalItems: 0
     },
     methods:{
@@ -27,6 +22,7 @@ const Vm = new Vue({
                 .catch(error => {
                     console.log(error)
                 })
-    }
+    },
+       
 },
 });

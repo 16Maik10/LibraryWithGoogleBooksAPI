@@ -36,32 +36,58 @@ const bookCard = {
   </a>`
 }
 
+const totalItems = {
+  template: `<div v-show="$parent.show" class="query-total">Found {{$parent.totalItems}} results</div>`
+}
+
+const loadMoreBtn = {
+  template: `<button
+  class="pagination"
+  v-show="this.$parent.show"
+  @click="$root.$refs.books.getBooks()"
+>
+  Load more
+</button>`
+}
+
 const books = {
     data(){
         return {
+            show: false,
             searchItems: [],
+            counter: 0,
+            booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
             startIndex: 0,
             maxResults: 30,
-            booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
+            userReq: ""
         }
     },
-    components: {bookCard},
+    components: {totalItems, bookCard, loadMoreBtn},
     methods:{
-        createReq(){
-            return this.booksAPIUrl +
-            "=" + 
-            textOfQuery + 
-            "&startIndex=" +
-            this.startIndex +
-            "&maxResults=" + 
-            this.maxResults +
-            "&key=" +
-            apiKey
+        getRequest(){
+          this.userReq = this.createReq();
+          this.clearContent();
+          this.getBooks(this.userReq);
         },
-        getBooks(url = this.createReq()){
+        createReq(){
+          return this.booksAPIUrl +
+          "=" + 
+          this.$root.textOfQuery +
+          (this.$root.category !== "all" ? `+subject:${this.$root.category}` : "") +
+          "&orderBy=" +
+          this.$root.orderBy +
+          "&startIndex=" +
+          this.startIndex +
+          "&maxResults=" + 
+          this.maxResults +
+          "&key=" +
+          apiKey
+        },
+        getBooks(url = this.userReq){
+          this.$parent.showLoading = true;
             this.$parent.getJson(url).then(data => {
-                this.$parent.show = data.items;
-                this.$root.totalItems = data.totalItems;
+                this.show = data.items;
+                this.totalItems = data.totalItems;
                 if(data.items){
                     data.items.forEach(el => this.searchItems.push(el))
                 }
@@ -71,28 +97,29 @@ const books = {
         },
         clearContent(){
             this.searchItems = [];
+            this.$parent.show = false;
+            this.$parent.totalItems = 0;
+        },
+        loadMore(){
         }
-    },
-    /* mounted(){
-        this.finalReq = this.createReq();
-        this.$parent.getJson(this.finalReq).then(data => {
-            this.getBooks();
-            this.$root.totalItems = data.totalItems;
-            this.$root.show = !this.$root.show;
-            //this.startIndex+=29;
-            }
-        )
-    }, */
+      },
     updated(){
-        console.log(`Построил`);
+      this.$parent.showLoading = true;
+      if(this.searchItems[0]){
+        this.$parent.showLoading = false;
+      }
     },
     template: `
     <div class="books">
-    <bookCard
+      <total-items></total-items>
+        <div class="books__items">
+        <bookCard
       href="#"
       class="book-card"
       v-for="book of this.searchItems"
       :book="book"
     ></bookCard>
+        </div>
+    <loadMoreBtn></loadMoreBtn>
   </div>`
 }
