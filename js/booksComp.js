@@ -44,7 +44,7 @@ const loadMoreBtn = {
   template: `<button
   class="pagination"
   v-show="this.$parent.show"
-  @click="$root.$refs.books.getBooks()"
+  @click="$root.$refs.books.loadMore()"
 >
   Load more
 </button>`
@@ -84,30 +84,33 @@ const books = {
           apiKey
         },
         getBooks(url = this.userReq){
-          this.$parent.showLoading = true;
             this.$parent.getJson(url).then(data => {
                 this.show = data.items;
                 this.totalItems = data.totalItems;
                 if(data.items){
-                    data.items.forEach(el => this.searchItems.push(el))
+                    data.items.forEach((el,i) => {
+                        this.searchItems.push(el);  
+                    })
                 }
-                this.startIndex+=this.maxResults;
+                
                 }
             )
         },
         clearContent(){
             this.searchItems = [];
-            this.$parent.show = false;
+            this.show = false;
             this.$parent.totalItems = 0;
         },
         loadMore(){
+          this.$parent.showLoading = !this.$parent.showLoading;
+          this.show = false;
+          this.startIndex+=this.maxResults;
+          this.getBooks(this.createReq());
+          
         }
       },
     updated(){
-      this.$parent.showLoading = true;
-      if(this.searchItems[0]){
-        this.$parent.showLoading = false;
-      }
+        this.$parent.showLoading = !this.$parent.showLoading;
     },
     template: `
     <div class="books">
