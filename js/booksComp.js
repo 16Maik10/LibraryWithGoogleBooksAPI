@@ -1,7 +1,8 @@
 const bookCard = {
     props: ['book'],
-    template: `<a
-    href="#"
+    template: 
+    /*html*/ 
+    `<div
     class="book-card"
     :key="book.id"
     :id="book.id"
@@ -10,7 +11,7 @@ const bookCard = {
       class="book-card__img"
       v-if="book.volumeInfo.imageLinks"
       :src="book.volumeInfo.imageLinks.thumbnail"
-      alt=""
+      alt="photo of book"
       width="128"
       height="210"
     />
@@ -18,7 +19,7 @@ const bookCard = {
       class="book-card__img"
       v-else="book.volumeInfo.imageLinks"
       src="https://books.google.ru/googlebooks/images/no_cover_thumb.gif"
-      alt=""
+      alt="default img of book"
       width="128"
       height="210"
     />
@@ -33,45 +34,83 @@ const bookCard = {
         {{book.volumeInfo.authors.join(', ')}}
       </p>
     </div>
-  </a>`
+  </div>`
 }
 
 const totalItems = {
-  template: `<div v-show="$parent.show" class="query-total">Found {{$parent.totalItems}} results</div>`
+  template: 
+  /*html*/ 
+  `<div v-show="$parent.showBooksBtns" class="query-total">Found {{$parent.totalItems}} results</div>`
 }
 
 const loadMoreBtn = {
-  template: `<button
+  template: 
+  /*html*/ 
+  `<button
   class="pagination"
-  v-show="this.$parent.show"
-  @click="$root.$refs.books.loadMore()"
+  v-show="this.$parent.showBooksBtns"
+  @click="updateBooks"
 >
   Load more
-</button>`
+</button>`,
+methods: {
+  updateBooks(){
+    this.$emit('load-more');
+  }
+}
 }
 
 const books = {
     data(){
         return {
-            show: false,
+            showBooksBtns: false,
             searchItems: [],
             counter: 0,
             booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
             startIndex: 0,
             maxResults: 30,
-            userReq: ""
         }
     },
     components: {totalItems, bookCard, loadMoreBtn},
     methods:{
-        getRequest(){
-          this.userReq = this.createReq();
+        sendRequest(){
           this.clearContent();
-          this.getBooks(this.userReq);
+          this.getBooks();
         },
-        createReq(){
-          return this.booksAPIUrl +
-          "=" + 
+        getBooks(url = this.userQuery){
+            this.$parent.getJson(url).then(data => {
+            this.showBooksBtns = data.items;
+            this.totalItems = data.totalItems;
+            if(data.items){
+                data.items.forEach((el,i) => {
+                    this.searchItems.push(el);  
+                })
+            } else if(this.searchItems.length){
+              this.$parent.showLoading = !this.$parent.showLoading;
+              alert('Это все найденные книги по вашему запросу');
+            } else{
+              this.$parent.showLoading = !this.$parent.showLoading;
+            alert('К сожалению, по вашему запросу ничего не найдено');
+            }
+                
+        })
+        },
+        clearContent(){
+            this.searchItems = [];
+            this.showBooksBtns = false;
+            this.$parent.totalItems = 0;
+        },
+        loadMore(){
+          this.$parent.showLoading = !this.$parent.showLoading;
+          this.showBooksBtns = false;
+          this.startIndex+=this.maxResults;
+          this.getBooks();
+          
+        }
+      },
+      computed:{
+        userQuery(){
+          return this.booksAPIUrl + 
           this.$root.textOfQuery +
           (this.$root.category !== "all" ? `+subject:${this.$root.category}` : "") +
           "&orderBy=" +
@@ -80,47 +119,23 @@ const books = {
           this.startIndex +
           "&maxResults=" + 
           this.maxResults
-        },
-        getBooks(url = this.userReq){
-            this.$parent.getJson(url).then(data => {
-                this.show = data.items;
-                this.totalItems = data.totalItems;
-                if(data.items){
-                    data.items.forEach((el,i) => {
-                        this.searchItems.push(el);  
-                    })
-                }
-                
-                }
-            )
-        },
-        clearContent(){
-            this.searchItems = [];
-            this.show = false;
-            this.$parent.totalItems = 0;
-        },
-        loadMore(){
-          this.$parent.showLoading = !this.$parent.showLoading;
-          this.show = false;
-          this.startIndex+=this.maxResults;
-          this.getBooks(this.createReq());
-          
         }
       },
     updated(){
+      console.log('updated');
         this.$parent.showLoading = !this.$parent.showLoading;
     },
-    template: `
+    template: 
+    /*html*/ 
+    `
     <div class="books">
       <total-items></total-items>
         <div class="books__items">
         <bookCard
-      href="#"
-      class="book-card"
       v-for="book of this.searchItems"
       :book="book"
     ></bookCard>
         </div>
-    <loadMoreBtn></loadMoreBtn>
+    <loadMoreBtn @load-more="loadMore"></loadMoreBtn>
   </div>`
 }

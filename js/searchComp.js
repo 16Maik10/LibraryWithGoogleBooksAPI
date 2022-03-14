@@ -1,5 +1,7 @@
 const searchForm = {
-    template: `<form action="#" class="search" @submit.prevent="$root.$refs.books.getRequest()">
+    template: 
+    /*html*/ 
+    `<form action="#" class="search" @submit.prevent="$root.$refs.books.sendRequest()">
     <div class="search__query">
     <input type="text" class="search__text" v-model="$root.textOfQuery"/>
       <button type="submit" class="search__submit"></button>
