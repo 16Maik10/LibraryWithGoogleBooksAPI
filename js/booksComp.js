@@ -79,9 +79,7 @@ const books = {
           "&startIndex=" +
           this.startIndex +
           "&maxResults=" + 
-          this.maxResults +
-          "&key=" +
-          apiKey
+          this.maxResults
         },
         getBooks(url = this.userReq){
             this.$parent.getJson(url).then(data => {
