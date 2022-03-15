@@ -7,7 +7,7 @@
 
 const app = new Vue({
     el: "#app",
-    components: {searchForm, books},
+    components: {searchForm, books, popup},
     data: {
         textOfQuery: "",
         category: "all",

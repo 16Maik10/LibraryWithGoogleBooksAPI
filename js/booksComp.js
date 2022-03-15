@@ -1,12 +1,69 @@
+const popup = {
+  template: 
+  /*html*/
+  `
+      <div class="popup-wrapper" ref="popupWrapper">
+        <div class="popup">
+        <div class="popup__content">
+          <slot></slot>
+        </div> 
+        </div>
+      <div>
+  `,
+  methods: {
+    closePopup() {
+      this.$emit('closePopup');
+    }
+  },
+  mounted(){
+    let vm = this;
+    document.addEventListener('click', e => {
+      if(e.target === this.$refs.popupWrapper){
+        vm.closePopup();
+      }
+    })
+  }
+}
+
 const bookCard = {
     props: ['book'],
+    data(){
+      return {
+        isInfo: false
+      }
+    },
+    components: {popup},
     template: 
     /*html*/ 
     `<div
     class="book-card"
     :key="book.id"
     :id="book.id"
+    @click="showPopup"
   >
+    <popup 
+      v-if="this.isInfo"
+      @closePopup="closePopup"
+      >
+      <img width="128"
+      height="210" :src="book.volumeInfo.imageLinks.thumbnail"/>
+      <p v-if="book.volumeInfo.title" class="book-card__title">
+        {{book.volumeInfo.title}}
+      </p>
+      <p v-if="book.volumeInfo.categories" class="book-card__category">
+    {{book.volumeInfo.categories.join(' / ')}}
+      </p>
+      <p v-if="book.volumeInfo.authors" class="book-card__authors">
+        {{book.volumeInfo.authors.join(', ')}}
+      </p>
+
+      <p v-if="book.volumeInfo.description" class="popup__description">
+        {{book.volumeInfo.description}}
+      </p>
+      <a class="popup__link" target="_blank" :href="book.volumeInfo.infoLink"> Перейти на страницу книги </a>
+    </popup>
+    
+
     <img
       class="book-card__img"
       v-if="book.volumeInfo.imageLinks"
@@ -34,7 +91,16 @@ const bookCard = {
         {{book.volumeInfo.authors.join(', ')}}
       </p>
     </div>
-  </div>`
+    
+  </div>`,
+  methods: {
+    showPopup(){
+      this.isInfo = !this.isInfo;
+    },
+    closePopup(){
+      this.isInfo = false;
+    }
+  }
 }
 
 const totalItems = {
@@ -68,7 +134,7 @@ const books = {
             counter: 0,
             booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
             startIndex: 0,
-            maxResults: 30,
+            maxResults: 30
         }
     },
     components: {totalItems, bookCard, loadMoreBtn},
@@ -131,11 +197,11 @@ const books = {
     <div class="books">
       <total-items></total-items>
         <div class="books__items">
-        <bookCard
+        <book-card
       v-for="book of this.searchItems"
       :book="book"
-    ></bookCard>
+    ></book-card>
         </div>
-    <loadMoreBtn @load-more="loadMore"></loadMoreBtn>
+    <load-more-btn @load-more="loadMore"></load-more-btn>
   </div>`
 }
