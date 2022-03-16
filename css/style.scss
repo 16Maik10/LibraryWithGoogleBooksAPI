@@ -235,15 +235,12 @@
 
   .book-card{
     &__title{
-      font-size: 20px;
+      font-size: 18px;
     }
     &__category_popup,
     &__authors_popup{
       font-size: 16px;
     }
-    &__authors_popup{}
-
-    &__title_popup{}
   }
 
   .popup__description{
