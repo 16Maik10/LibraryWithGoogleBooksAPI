@@ -46,7 +46,8 @@ const bookCard = {
       @closePopup="closePopup"
       >
       <img width="128"
-      height="210" :src="book.volumeInfo.imageLinks.thumbnail"/>
+      height="210" :src="book.volumeInfo.imageLinks.thumbnail"
+      class="book-card__img_popup"/>
       <p v-if="book.volumeInfo.title" class="book-card__title">
         {{book.volumeInfo.title}}
       </p>
@@ -65,7 +66,7 @@ const bookCard = {
     
 
     <img
-      class="book-card__img book-card__img_popup"
+      class="book-card__img"
       v-if="book.volumeInfo.imageLinks"
       :src="book.volumeInfo.imageLinks.thumbnail"
       alt="photo of book"
@@ -136,7 +137,8 @@ const books = {
             booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
             startIndex: 0,
             maxResults: 30,
-            totalItems: 0
+            totalItems: 0,
+            headerHeight: 0
         }
     },
     components: {totalItems, bookCard, loadMoreBtn},
@@ -195,9 +197,16 @@ const books = {
           this.maxResults
         }
       },
+    mounted(){
+      this.headerHeight = document.querySelector('header').offsetHeight;
+      console.log(this.headerHeight)
+    },
     updated(){
-      console.log('updated');
         this.$parent.showLoading = !this.$parent.showLoading;
+        window.scrollBy({
+          top: this.headerHeight,
+          behavior: 'smooth'
+        });
     },
     template: 
     /*html*/ 
