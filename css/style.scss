@@ -84,20 +84,25 @@
   flex-direction: column;
   width: 250px;
   padding: 20px;
-  box-shadow: 4px 15px 30px -13px;
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+
   margin-bottom: 25px;
   color: #000;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: box-shadow 0.2s;
 
   &:hover {
-    transform: scale(1.05);
+    box-shadow: 4px 15px 30px -13px;
   }
 
   &__img {
     box-shadow: 6px 8px 38px -5px;
     margin: 5px auto;
+
+    &_popup{
+      max-height: 26vh;
+    }
   }
 
   &__desc {
@@ -109,10 +114,14 @@
     font: 402 20px/20px sans-serif;
     color: rgba(0, 0, 0, 0.5);
   }
-
   &__title {
     font: 700 22px sans-serif;
     margin: 10px 0;
+  }
+  &__category_popup,
+  &__authors_popup,
+  &__title_popup {
+    max-height: 10vh;
   }
 }
 
@@ -159,5 +168,89 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.popup {
+  padding: 16px;
+  width: 60vw;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 10px;
+
+  &-wrapper {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__description {
+    margin: 20px 10px 0;
+    padding: 0 20px;
+    font: 400 17px sans-serif;
+    text-align: justify;
+    max-height: 40vh;
+    overflow-y: auto;
+
+  }
+
+  &__link {
+    margin: 10px 0;
+    color: #ff4d0d;
+    text-decoration: none;
+    font-size: 16px;
+    transition: transform 0.2s, color 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+      color: #00ff0a;
+    }
+  }
+}
+
+@media screen and (max-width: 640px){
+  .search{
+    &__select,&__text{
+      width: 98%;
+    }
+
+    &__select{
+      margin: 10px 0;
+    }
+  }
+
+  .book-card{
+    &__title{
+      font-size: 20px;
+    }
+    &__category_popup,
+    &__authors_popup{
+      font-size: 16px;
+    }
+    &__authors_popup{}
+
+    &__title_popup{}
+  }
+
+  .popup__description{
+    font-size: 14px;
+  }
+
+  .books__items{
+    justify-content: center;
   }
 }
