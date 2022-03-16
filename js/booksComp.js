@@ -50,10 +50,10 @@ const bookCard = {
       <p v-if="book.volumeInfo.title" class="book-card__title">
         {{book.volumeInfo.title}}
       </p>
-      <p v-if="book.volumeInfo.categories" class="book-card__category">
+      <p v-if="book.volumeInfo.categories" class="book-card__category book-card__category_popup">
     {{book.volumeInfo.categories.join(' / ')}}
       </p>
-      <p v-if="book.volumeInfo.authors" class="book-card__authors">
+      <p v-if="book.volumeInfo.authors" class="book-card__authors book-card__authors_popup">
         {{book.volumeInfo.authors.join(', ')}}
       </p>
 
@@ -65,7 +65,7 @@ const bookCard = {
     
 
     <img
-      class="book-card__img"
+      class="book-card__img book-card__img_popup"
       v-if="book.volumeInfo.imageLinks"
       :src="book.volumeInfo.imageLinks.thumbnail"
       alt="photo of book"
@@ -73,7 +73,7 @@ const bookCard = {
       height="210"
     />
     <img
-      class="book-card__img"
+      class="book-card__img book-card__img_popup"
       v-else="book.volumeInfo.imageLinks"
       src="https://books.google.ru/googlebooks/images/no_cover_thumb.gif"
       alt="default img of book"
@@ -106,7 +106,7 @@ const bookCard = {
 const totalItems = {
   template: 
   /*html*/ 
-  `<div v-show="$parent.showBooksBtns" class="query-total">Found {{$parent.totalItems}} results</div>`
+  `<div v-show="$parent.showTotalItems" class="query-total">Found {{$parent.totalItems}} results</div>`
 }
 
 const loadMoreBtn = {
@@ -114,7 +114,7 @@ const loadMoreBtn = {
   /*html*/ 
   `<button
   class="pagination"
-  v-show="this.$parent.showBooksBtns"
+  v-show="this.$parent.showLoadBtn"
   @click="updateBooks"
 >
   Load more
@@ -129,12 +129,14 @@ methods: {
 const books = {
     data(){
         return {
-            showBooksBtns: false,
+            showTotalItems: false,
+            showLoadBtn: false,
             searchItems: [],
             counter: 0,
             booksAPIUrl: `https://www.googleapis.com/books/v1/volumes?q=`,
             startIndex: 0,
-            maxResults: 30
+            maxResults: 30,
+            totalItems: 0
         }
     },
     components: {totalItems, bookCard, loadMoreBtn},
@@ -145,8 +147,12 @@ const books = {
         },
         getBooks(url = this.userQuery){
             this.$parent.getJson(url).then(data => {
-            this.showBooksBtns = data.items;
-            this.totalItems = data.totalItems;
+            this.showLoadBtn = Boolean(data.items);
+            
+            if(!this.totalItems){
+              this.totalItems = data.totalItems
+              this.showTotalItems = true;
+            };
             if(data.items){
                 data.items.forEach((el,i) => {
                     this.searchItems.push(el);  
@@ -163,12 +169,14 @@ const books = {
         },
         clearContent(){
             this.searchItems = [];
-            this.showBooksBtns = false;
-            this.$parent.totalItems = 0;
+            this.showLoadBtn = false;
+            this.showTotalItems = false;
+            this.totalItems = 0;
+            this.startIndex = 0;
         },
         loadMore(){
           this.$parent.showLoading = !this.$parent.showLoading;
-          this.showBooksBtns = false;
+          this.showLoadBtn = false;
           this.startIndex+=this.maxResults;
           this.getBooks();
           

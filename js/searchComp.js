@@ -4,7 +4,7 @@ const searchForm = {
     `<form action="#" class="search" @submit.prevent="$root.$refs.books.sendRequest">
     <div class="search__query">
     <input type="text" class="search__text" v-model="$root.textOfQuery"/>
-      <button type="submit" class="search__submit"></button>
+      <button @click="console.log('123')" type="submit" class="search__submit"></button>
     </div>
     <div class="search__filters">
       <label for="category" class="search__label">Categories</label>

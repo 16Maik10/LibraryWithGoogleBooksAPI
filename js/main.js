@@ -13,7 +13,6 @@ const app = new Vue({
         category: "all",
         orderBy: "relevance",
         showLoading: false,
-        totalItems: 0
     },
     methods:{
         getJson(url){
